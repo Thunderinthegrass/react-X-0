@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script> <!-- эти скрипты подключают на страницу реакт, реакт-дом и бабель -->
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <title>lesson 2</title>
+</head>
+<body>
+  <div id="root">
+
+  </div>
+  <!-- <div class="game">
+    <div class="game-info">
+      Ход: <span class="symbol symbol--x">X</span>
+    </div>
+    <div class="game-field">
+      <button class="sell"><span class="symbol symbol--x">X</span></button>
+      <button class="sell"><span class="symbol symbol--0">0</span></button>
+      <button class="sell"></button>
+      <button class="sell"><span class="symbol symbol--x">X</span></button>
+      <button class="sell"></button>
+      <button class="sell"><span class="symbol symbol--0">0</span></button>
+      <button class="sell"><span class="symbol symbol--x">X</span></button>
+      <button class="sell"><span class="symbol symbol--0">0</span></button>
+      <button class="sell"></button>
+    </div>
+  </div> -->
+  <script type="text/babel">
+
+    const SYMBOL_X = 'X';
+    const SYMBOL_0 = '0';
+
+    function App(){
+      const [state, setState] = React.useState(SYMBOL_X);//функция useState() возвращает массив из двух значений - состояние и функцию для установки состояния, принимает первым аргументом изначальное значение состояния(например SYMBOL_X)
+
+      const cells = [null, SYMBOL_X, SYMBOL_0, null, SYMBOL_0, SYMBOL_X, SYMBOL_X, SYMBOL_0, null];//массив с символами, на основе которого будет происходить отрисовка
+
+      const currentStep = SYMBOL_X;
+
+      const getSymbolClassName = (symbol) => {//функция добавления буквы хода и придания этой букве класса, в зависимости, какое значение у переменной currentStep
+        if (symbol === SYMBOL_X) {
+          return 'symbol--x';
+        }
+        if (symbol === SYMBOL_0) {
+          return 'symbol--0';
+        }
+        return '';
+      }
+
+      const renderSymbol = (symbol) => <span className={ `symbol ${getSymbolClassName(symbol)}` }>{ symbol }</span>;//функция, с помощью которой можно вставлять в разные места span, просто меняя в нем данные с помощью аргумента
+
+      const handleCellClick = (id) => {
+        console.log(id);
+        setState(SYMBOL_0);
+        // cells[id] = currentStep;
+      }
+
+      return (
+        <div>
+          <div className="privet">Привет</div>
+          <div className="game">
+            <div className="game-info">
+              Ход: {renderSymbol(state)}
+            </div>
+            <div className="game-field">
+              {cells.map((symbol, id) => {
+                return <button key={id} className="cell" onClick={ () => handleCellClick(id)}>
+                        { symbol ? renderSymbol(symbol) : null }
+                       </button>
+              })}
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));//root - это тот объект, в котором будет отрисовываться приложение
+    
+    root.render(<App/>) //у объекта root есть метод, в который нужно передать корневой React-компонент приложения(App). Компонент - это функция
+  </script>
+
+  <style>
+    .game-field{
+      display: flex;
+      flex-wrap: wrap;
+      width: 300px;
+      height: 300px;
+    }
+    .cell{
+      width: 100px;
+      height: 100px;
+      background: #ffffff;
+      transition: background-color .3s;
+      cursor: pointer;
+    }
+    .cell:hover{
+      background: #ecd6ee;
+    }
+    .symbol{
+      font-size: 70px;
+    }
+    .symbol--x{
+      color: #FF0000;
+    }
+    .symbol--0{
+      color: #00FF00;
+    }
+  </style>
+</body>
+</html>
