@@ -36,9 +36,9 @@
     function App(){
       const [state, setState] = React.useState(SYMBOL_X);//функция useState() возвращает массив из двух значений - состояние и функцию для установки состояния, принимает первым аргументом изначальное значение состояния(например SYMBOL_X)
 
-      const cells = [null, SYMBOL_X, SYMBOL_0, null, SYMBOL_0, SYMBOL_X, SYMBOL_X, SYMBOL_0, null];//массив с символами, на основе которого будет происходить отрисовка
+      const [cells, setCells] = React.useState([null, null, null, null, null, null, null, null, null]);//массив с символами, на основе которого будет происходить отрисовка
 
-      const currentStep = SYMBOL_X;
+      const [currentStep, setCurrentStep] = React.useState(SYMBOL_X);
 
       const getSymbolClassName = (symbol) => {//функция добавления буквы хода и придания этой букве класса, в зависимости, какое значение у переменной currentStep
         if (symbol === SYMBOL_X) {
@@ -53,9 +53,7 @@
       const renderSymbol = (symbol) => <span className={ `symbol ${getSymbolClassName(symbol)}` }>{ symbol }</span>;//функция, с помощью которой можно вставлять в разные места span, просто меняя в нем данные с помощью аргумента
 
       const handleCellClick = (id) => {
-        console.log(id);
-        setState(SYMBOL_0);
-        // cells[id] = currentStep;
+        
       }
 
       return (
@@ -63,7 +61,7 @@
           <div className="privet">Привет</div>
           <div className="game">
             <div className="game-info">
-              Ход: {renderSymbol(state)}
+              Ход: {renderSymbol(currentStep)}
             </div>
             <div className="game-field">
               {cells.map((symbol, id) => {
