@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <a href="index.html" class="back">Вернуться назад</a>
+  <h2>Копирование объектов</h2>
+
+  <script>
+    // console.log({} === {});Это условие всегда будет возвращать «ложь», поскольку JavaScript сравнивает объекты по ссылке, а не по значению.
+    
+    let arr = {one: "Раз", two: "Два", three: {first: true, second: true}};
+    let arr1 = arr;//здесь мы скопируем не объект arr, то есть не данные из этого объекта, а ссылку на этот объект, то есть это будут теперь две ссылки на одни и те же данные, при изменении любой из этих переменных будет меняться исходный объект, а не сама переменная, и обе эти переменные будут ссылаться на изменненные данные
+
+    arr1.one = "Один";
+    console.log(arr);
+
+    console.log(arr == arr1);//arr и arr1 равны как при обысном сравнении, так и при строгом, потому что они ссылаются на один и тот же объект
+    
+    // копирование объектов: 
+    // 1.поверхностное копирование
+    // с помощью спред-оператора:
+    let copyObject = {...arr};//копируем поверхностно объект arr в объект copyObject с помощью спред-оператора. 
+    console.log(arr === copyObject);//false, разные объекты
+    
+    arr.one = 'arr';// при поверхностном копировании ключи с простыми типами данных скопируются в новый объект.
+    arr.three.first = false;// если ключ содержит не простой тип данных, а объект, то этот объект не скопируется, на него будет скопирована ссылка, поэтому в этом случае tree.first и в исходном, и в скопированном объекте ссылается на один и тот же объект, и при изменении на false в arr он станет false и в объекте copyObject:
+    console.log('arr - ', arr);
+    console.log('copyobject - ', copyObject);
+    console.log(arr.three === copyObject.three);// из-за того, что arr.three и copyObject.three - это ссылки на один и тот же объект, они будут равны.
+
+    // с помощью метода Object.assign() можно скопировать один или несколько объектов в объект, переданный в метод первым аргументом. Это неглубокое копирование.
+    let secondCopy = Object.assign({}, arr);
+    arr.three.second = false;//при замене значения в arr.three.second оно поменяется у всех трех массивов, точнее поменяется только в одном массиве, на который у всех трех массивов ссылки.
+    console.log(secondCopy);
+    console.log(copyObject);
+
+    //2.Глубокое копирование
+    // с помощью JSON.stringify() и JSON.parse().
+    // JSON.stringify() преобразовывает объект в JSON,но только не функции, не символьные ключи и значения и не свойства, содержащие undefined. Вместо объекта Date скопируется строка с датой. JSON.parse() преобразовывает JSON обратно в объект.
+    
+    let student = {
+      name: 'John',
+      age: 30,
+      isAdmin: false,
+      courses: ['html', 'css', 'js'],
+      wife: null,
+      future: undefined
+    };
+
+    let studentCopy = JSON.parse(JSON.stringify(student));
+    student.courses[3] = 'react';
+    console.log(student);
+    console.log(studentCopy);//в новый объект скопировалось все, кроме undefined.
+    console.log(student.courses === secondCopy.courses);//теперь это два разных объекта, и вложенные массивы тоже разные, больше не ссыдаются на один и тот же массив.
+    console.assert(1 + 1 === 2, 'Кажется, сегодня математике не улыбнулось');
+     
+    
+
+    
+
+
+    
+
+  </script>
+  
+</body>
+</html>
