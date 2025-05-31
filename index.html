@@ -12,12 +12,13 @@
   <ul>
     <li><a href="copy-objects.html" target="_blank">Копирование объектов</a></li>
     <li><a href="arrays-methods.html" target="_blank">Методы массивов</a></li>
+    <li><a href="destructuring-assignment.html" target="_blank">Деструктуризация</a></li>
   </ul>
   <div id="root">
 
   </div>
   <script type="text/babel" data-type="module">
-    import { BrowserRouter, Routes, Route, Link } from "https://esm.sh/react-router-dom@7?dev";//подключает к проекту react-router-dom
+    // import { BrowserRouter, Routes, Route, Link } from "https://esm.sh/react-router-dom@7?dev";//подключает к проекту react-router-dom
 
     const SYMBOL_X = 'X';
     const SYMBOL_0 = '0';
@@ -39,7 +40,6 @@
 
         if (cells[a] && cells[a] == cells[b] && cells[a] == cells[c]) {
           return [a, b, c];
-          
         }
       }
     }
@@ -47,7 +47,9 @@
     function App(){
       const [state, setState] = React.useState(SYMBOL_X);//функция useState() возвращает массив из двух значений - состояние и функцию для установки состояния, принимает первым аргументом изначальное значение состояния(например SYMBOL_X)
       const [cells, setCells] = React.useState([null, null, null, null, null, null, null, null, null]);//массив с символами, на основе которого будет происходить отрисовка
-      const [currentStep, setCurrentStep] = React.useState(SYMBOL_X);   
+      const [currentStep, setCurrentStep] = React.useState(SYMBOL_X);
+      const [winnerSequence, setWinnerSequence] = React.useState();//определяем состояние для хранения победившей последовательности
+      
 
       const getSymbolClassName = (symbol) => {//функция добавления буквы хода и придания этой букве класса, в зависимости, какое значение у переменной currentStep
         if (symbol === SYMBOL_X) {
@@ -61,18 +63,19 @@
 
       const renderSymbol = (symbol) => <span className={ `symbol ${getSymbolClassName(symbol)}` }>{ symbol }</span>;//функция, с помощью которой можно вставлять в разные места span, просто меняя в нем данные с помощью аргумента
 
-      const handleCellClick = (id) => {//функция управления содержимым клеток
+      const handleCellClick = (id) => {//функция управления содержимым клеток, срабатывает по нажатию на кнопку
         if (cells[id]) {//проверяем, существует ли элемент массива, если он null, то return
           return;
         }
-        console.log(currentStep === SYMBOL_0 ? SYMBOL_X : SYMBOL_0);
         
         let cellsCopy = cells.slice();//делаем копию изначального массива для иммутабельности
         cellsCopy[id] = currentStep;//помещаем в выбранную ячейку переменную currentStep из хука
+        const winner = computeWinner(cellsCopy);//переменная winner, если с помощью функции computeWinner(cellsCopy) в скопированном и измененном массиве нашелся победитель, содержится массив с числами - индексами победивших индексов победившей комбинации клеток
+
         setCells(cellsCopy);//меняем старый массив в хуке на новый, и этим перерисовываем все данные из массива
         setCurrentStep(currentStep === SYMBOL_0 ? SYMBOL_X : SYMBOL_0);//проверяем, какой символ лежит в currentStep и если надо меняем его
 
-        computeWinner(cells);
+        setWinnerSequence(winner);//передаем массив индексов победившей последовательности клеток в хук winnerSequence
       }
       //хук useState для обучения
       //хуки вызываются только внутри функциональных компонентов
@@ -111,8 +114,13 @@
             </div>
             <div className="game-field">
               {cells.map((symbol, id) => {
-                return <button key={id} className="cell" onClick={ () => handleCellClick(id)}>
-                        { symbol ? renderSymbol(symbol) : null }
+                const isWinner = winnerSequence?.includes(id);//проверяем, включает ли массив с индексами победившей комбинации индекс нажатой кнопки
+                return <button 
+                          key={id} 
+                          className={`cell ${isWinner ? 'cell--winner' : ''}`}//и если isWinner true, добавляем класс cell--winner
+                          onClick={ () => handleCellClick(id)}
+                        >
+                          { symbol ? renderSymbol(symbol) : null }
                        </button>
               })}
             </div>
@@ -196,6 +204,9 @@
       cursor: pointer;
     }
     .cell:hover{
+      background: #ecd6ee;
+    }
+    .cell--winner{
       background: #ecd6ee;
     }
     .symbol{
