@@ -20,10 +20,19 @@
   <br>
   <br>
   <strong>Синтаксис array?.method</strong> использует необязательный оператор цепочки в JavaScript. Этот оператор позволяет вам получать доступ к свойствам или вызывать методы объекта, который может быть нулевым или неопределенным, не вызывая ошибки.
-  При использовании с массивом array?.methodпытается вызвать указанный метод для массива. Если массив не равен null или undefined, метод вызывается нормально. Однако, если массив равен null или undefined, выражение оценивается как undefined без выдачи ошибки.
+  При использовании с массивом array?.method пытается вызвать указанный метод для массива. Если массив не равен null или undefined, метод вызывается нормально. Однако, если массив равен null или undefined, выражение оценивается как undefined без выдачи ошибки.
   </div>
   <script>
+    let arr = [8,2,3];
+    // console.log(arr.includes(3));// ошибка arrays-methods.html:27 Uncaught TypeError: Cannot read properties of undefined (reading 'includes')
+    // console.log(arr?.includes(3));//вернет undefined без ошибки
+    const arrayOpOp = (arr) => {
+      return arr;
+    } 
 
+    console.log(arrayOpOp(arr?.[0] ?? 'нету массива'));
+    console.log(arrayOpOp(arr ?? 'нету массива'));
+    
   </script>
 </body>
 </html>

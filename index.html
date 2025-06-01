@@ -9,7 +9,9 @@
   <title>lesson 2</title>
 </head>
 <body>
+  <h2>Вспомогательные ссылки</h2>
   <ul>
+    <li><a href="use-state-huk.html" target="_blank">Хук useState</a></li>
     <li><a href="copy-objects.html" target="_blank">Копирование объектов</a></li>
     <li><a href="arrays-methods.html" target="_blank">Методы массивов</a></li>
     <li><a href="destructuring-assignment.html" target="_blank">Деструктуризация</a></li>
@@ -45,10 +47,11 @@
     }
 
     function App(){
-      const [state, setState] = React.useState(SYMBOL_X);//функция useState() возвращает массив из двух значений - состояние и функцию для установки состояния, принимает первым аргументом изначальное значение состояния(например SYMBOL_X)
       const [cells, setCells] = React.useState([null, null, null, null, null, null, null, null, null]);//массив с символами, на основе которого будет происходить отрисовка
-      const [currentStep, setCurrentStep] = React.useState(SYMBOL_X);
+      const [currentStep, setCurrentStep] = React.useState(SYMBOL_X);//текущий ход
       const [winnerSequence, setWinnerSequence] = React.useState();//определяем состояние для хранения победившей последовательности
+      
+      console.log(cells);
       
 
       const getSymbolClassName = (symbol) => {//функция добавления буквы хода и придания этой букве класса, в зависимости, какое значение у переменной currentStep
@@ -64,60 +67,35 @@
       const renderSymbol = (symbol) => <span className={ `symbol ${getSymbolClassName(symbol)}` }>{ symbol }</span>;//функция, с помощью которой можно вставлять в разные места span, просто меняя в нем данные с помощью аргумента
 
       const handleCellClick = (id) => {//функция управления содержимым клеток, срабатывает по нажатию на кнопку
-        if (cells[id]) {//проверяем, существует ли элемент массива, если он null, то return
+        if (cells[id] || winnerSequence) {//проверяем, существует ли элемент массива, если существует, или есть массив с победившей комбинацией, то return, то есть игра останавливается
           return;
         }
         
         let cellsCopy = cells.slice();//делаем копию изначального массива для иммутабельности
         cellsCopy[id] = currentStep;//помещаем в выбранную ячейку переменную currentStep из хука
-        const winner = computeWinner(cellsCopy);//переменная winner, если с помощью функции computeWinner(cellsCopy) в скопированном и измененном массиве нашелся победитель, содержится массив с числами - индексами победивших индексов победившей комбинации клеток
+        const winner = computeWinner(cellsCopy);//переменная winner, если с помощью функции computeWinner(cellsCopy) в скопированном и измененном массиве нашелся победитель, содержится массив с числами - индексами клеток победившей комбинации
 
         setCells(cellsCopy);//меняем старый массив в хуке на новый, и этим перерисовываем все данные из массива
         setCurrentStep(currentStep === SYMBOL_0 ? SYMBOL_X : SYMBOL_0);//проверяем, какой символ лежит в currentStep и если надо меняем его
-
         setWinnerSequence(winner);//передаем массив индексов победившей последовательности клеток в хук winnerSequence
       }
-      //хук useState для обучения
-      //хуки вызываются только внутри функциональных компонентов
-      /*Хуки должны вызываться в компоненте при каждой отрисовке столько же раз, сколько и при первой отрисовке, хук не должен вызываться внутри if else или внутри циклов
-      Хук useState получает стартовое значение и его фиксирует в табличке только один раз, все остальные перерисовки игнорируют инициализационное значение
-      useState возвращает массив: первое значение - актуальное значение из таблицы, второе значение - функция, которая может менять это значение в таблице. Внутрь этой
-      функции мы передаем фиксированное значение, если следующее значение не зависит от предыдущего. Если зависит, предпочтительнее передавать функцию, которую вызовет сам реакт и засунет туда актуальное значение.
-      ofenbash be mine*/
-      const [count, setCount] = React.useState(0);
-      const [count1, setCount1] = React.useState(0);
+
+      let winnerSymbol = winnerSequence ? cells[winnerSequence[0]] : undefined;//проверяем, есть ли у нас массив с индексами победителя, и если есть, передаем в переменную winnerSymbol симол из массива cells, чей индекс соответствует первому элементу из массива победившей комбинации, зачем это надо смотри в строке, показывающей ход или победителя
 
       return (
         <div>
           <div className="privet">Привет</div>
-
-          <div className="cartWrapper">
-            <div className="cartWrapperTop">
-              <div className="ded-vovka cart">
-                {count}
-              </div>
-              <div className="selivan cart">
-                {count1}
-              </div>
-            </div>
-            <div className="cartWrapperBottom">
-              <button className="useStateBtnPlus" onClick={() => {setCount((actual) => actual + 1)}/*там, где следующее значение зависит от предыдущего, нужно писать такую функцию, чтобы всегда подставлялось актуальное значение, вместо actual можно написать другое слово, реакт понимает, что это за функция*/}>+</button>
-              <button className="useStateBtnPlus" onClick={() => setCount1((actual) => actual + 1)}>+</button>
-              <button className="useStateBtnMinus" onClick={() => {setCount((actual) => actual - 1); setCount1((actual) => actual - 1) }}>-</button>
-              <button className="useStateBtnMinus" onClick={() => {setCount(0); setCount1(0) }/*там, где новое значение не зависит от предыдущего, можно прописывать новое значение напрямую*/}>reset</button>
-            </div>
-          </div>
           
           <div className="game">
             <div className="game-info">
-              Ход: {renderSymbol(currentStep)}
+              {winnerSequence ? `Победитель: ` : 'Ход:'} {renderSymbol(winnerSymbol ?? currentStep)}
             </div>
             <div className="game-field">
               {cells.map((symbol, id) => {
-                const isWinner = winnerSequence?.includes(id);//проверяем, включает ли массив с индексами победившей комбинации индекс нажатой кнопки
+                const isWinner = winnerSequence?.includes(id);//проверяем, включает ли массив с индексами победившей комбинации индекс нажатой кнопки, и есть ли вообще победившая комбинация
                 return <button 
                           key={id} 
-                          className={`cell ${isWinner ? 'cell--winner' : ''}`}//и если isWinner true, добавляем класс cell--winner
+                          className={`cell ${isWinner ? 'cell--winner' : ''}`}//и если isWinner true, добавляем класс cell--winner. Класс cell-winner добавляется всем трем кнопкам, потому что каждый раз при нажатии на кнопку перерисовываются все кнопки, и если пришел массив с выигрышной комбинацией, то окрасятся при перерисовке те кнопки, чей индекс совпадает с одним из элементов выигрышного массива
                           onClick={ () => handleCellClick(id)}
                         >
                           { symbol ? renderSymbol(symbol) : null }
@@ -125,9 +103,6 @@
               })}
             </div>
           </div>
-
-          <h2>Вспомогательные ссылки</h2>
-          
         </div>
       )
     }

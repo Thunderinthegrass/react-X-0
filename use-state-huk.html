@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script> <!-- эти скрипты подключают на страницу реакт, реакт-дом и бабель -->
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <title>хук useState</title>
+</head>
+<body>
+  <div id="root">
+
+  </div>
+  <script type="text/babel" data-type="module">
+    // import { BrowserRouter, Routes, Route, Link } from "https://esm.sh/react-router-dom@7?dev";//подключает к проекту react-router-dom
+
+    function App(){
+      // const [state, setState] = React.useState(SYMBOL_X);//функция useState() возвращает массив из двух значений - состояние и функцию для установки состояния, принимает первым аргументом изначальное значение состояния(например SYMBOL_X)
+      
+      //хук useState для обучения
+      //хуки вызываются только внутри функциональных компонентов
+      /*Хуки должны вызываться в компоненте при каждой отрисовке столько же раз, сколько и при первой отрисовке, хук не должен вызываться внутри if else или внутри циклов
+      Хук useState получает стартовое значение и его фиксирует в табличке только один раз, все остальные перерисовки игнорируют инициализационное значение
+      useState возвращает массив: первое значение - актуальное значение из таблицы, второе значение - функция, которая может менять это значение в таблице. Внутрь этой
+      функции мы передаем фиксированное значение, если следующее значение не зависит от предыдущего. Если зависит, предпочтительнее передавать функцию, которую вызовет сам реакт и засунет туда актуальное значение.
+      ofenbash be mine*/
+      const [count, setCount] = React.useState(0);
+      const [count1, setCount1] = React.useState(0);
+
+      return (
+        <div>
+          <div className="privet">Привет</div>
+
+          <div className="cartWrapper">
+            <div className="cartWrapperTop">
+              <div className="ded-vovka cart">
+                {count}
+              </div>
+              <div className="selivan cart">
+                {count1}
+              </div>
+            </div>
+            <div className="cartWrapperBottom">
+              <button className="useStateBtn useStateBtnPlus" onClick={() => {setCount((actual) => actual + 1)}/*там, где следующее значение зависит от предыдущего, нужно писать такую функцию, чтобы всегда подставлялось актуальное значение, вместо actual можно написать другое слово, реакт понимает, что это за функция*/}>+</button>
+              <button className="useStateBtn useStateBtnPlus" onClick={() => setCount1((actual) => actual + 1)}>+</button>
+              <button className="useStateBtn useStateBtnMinus" onClick={() => {setCount((actual) => actual - 1); setCount1((actual) => actual - 1) }}>-</button>
+              <button className="useStateBtn useStateBtnMinus" onClick={() => {setCount(0); setCount1(0) }/*там, где новое значение не зависит от предыдущего, можно прописывать новое значение напрямую*/}>reset</button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));//root - это тот объект, в котором будет отрисовываться приложение
+    
+    root.render(<App/>) //у объекта root есть метод, в который нужно передать корневой React-компонент приложения(App). Компонент - это функция
+  </script>
+
+  <style>
+    .useStateP{
+      width: 50px;
+      height: 30px;
+      border: 1px solid #242629;
+      border-radius: 3px;
+      font-size: 20px;
+      text-align: center;
+      line-height: 30px;
+    }
+    .useStateBtn{
+      border: none;
+      background: #67d0f0;
+      padding: 5px 20px;
+      border-radius: 3px;
+      font-size: 30px;
+      line-height: 30px;
+      cursor: pointer;
+      color: #ffffff;
+      transition: background-color .3s;
+    }
+    .useStateBtn:hover{
+      background: #0dacdd;
+    }
+    .cartWrapper{
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      width: 1200px;
+      margin: 0 auto;
+    }
+    .cartWrapperTop{
+      display: flex;
+      gap: 30px;
+    }
+    .cartWrapperBottom{
+      display: flex;
+      justify-content: center;
+      width: 230px;
+      align-items: center;
+      gap: 10px;
+    }
+    .cart{
+      width: 100px;
+      height: 100px;
+      background: #f3e77a;
+      font-size: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #df5f5f;
+      font-family: sans-serif;
+    }
+
+    .game-field{
+      display: flex;
+      flex-wrap: wrap;
+      width: 300px;
+      height: 300px;
+    }
+    .cell{
+      width: 100px;
+      height: 100px;
+      background: #ffffff;
+      transition: background-color .3s;
+      cursor: pointer;
+    }
+    .cell:hover{
+      background: #ecd6ee;
+    }
+    .cell--winner{
+      background: #ecd6ee;
+    }
+    .symbol{
+      font-size: 70px;
+    }
+    .symbol--x{
+      color: #FF0000;
+    }
+    .symbol--0{
+      color: #00FF00;
+    }
+  </style>
+</body>
+</html>
