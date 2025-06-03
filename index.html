@@ -74,13 +74,29 @@
         let cellsCopy = cells.slice();//делаем копию изначального массива для иммутабельности
         cellsCopy[id] = currentStep;//помещаем в выбранную ячейку переменную currentStep из хука
         const winner = computeWinner(cellsCopy);//переменная winner, если с помощью функции computeWinner(cellsCopy) в скопированном и измененном массиве нашелся победитель, содержится массив с числами - индексами клеток победившей комбинации
+        console.log();
+        
 
         setCells(cellsCopy);//меняем старый массив в хуке на новый, и этим перерисовываем все данные из массива
         setCurrentStep(currentStep === SYMBOL_0 ? SYMBOL_X : SYMBOL_0);//проверяем, какой символ лежит в currentStep и если надо меняем его
         setWinnerSequence(winner);//передаем массив индексов победившей последовательности клеток в хук winnerSequence
+
+        const drawResult = cellsCopy.includes(null);
+        
+        if (!drawResult) {
+          setTimeout(() => alert('Ничья'), 100);
+        }
       }
 
       let winnerSymbol = winnerSequence ? cells[winnerSequence[0]] : undefined;//проверяем, есть ли у нас массив с индексами победителя, и если есть, передаем в переменную winnerSymbol симол из массива cells, чей индекс соответствует первому элементу из массива победившей комбинации, зачем это надо смотри в строке, показывающей ход или победителя
+
+      const removeCells = () => {//функция удаления всех элементов из клеток
+        let cellsCopy = cells.slice();
+        for (let i = 0; i < cellsCopy.length; i++) {
+          cellsCopy[i] = null;
+        }
+        setCells(cellsCopy);
+      }
 
       return (
         <div>
@@ -102,6 +118,7 @@
                        </button>
               })}
             </div>
+            <button onClick={() => removeCells()}>Очистить</button>
           </div>
         </div>
       )
