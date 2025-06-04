@@ -81,9 +81,9 @@
         setCurrentStep(currentStep === SYMBOL_0 ? SYMBOL_X : SYMBOL_0);//проверяем, какой символ лежит в currentStep и если надо меняем его
         setWinnerSequence(winner);//передаем массив индексов победившей последовательности клеток в хук winnerSequence
 
-        const drawResult = cellsCopy.includes(null);
+        const drawResult = cellsCopy.includes(null);//проверка, остались ли в массиве cellsCopy элементы null
         
-        if (!drawResult) {
+        if (!drawResult && !winner) {//если остались, и при этом не появился массив с выигрышной комбинацией, то выводим сообщение, что ничья
           setTimeout(() => alert('Ничья'), 100);
         }
       }
@@ -95,6 +95,7 @@
         for (let i = 0; i < cellsCopy.length; i++) {
           cellsCopy[i] = null;
         }
+        setWinnerSequence();//очищаем цвет у победивших клеток, передавая пустое значение в массив winnerSequence
         setCells(cellsCopy);
       }
 
@@ -181,7 +182,12 @@
       color: #df5f5f;
       font-family: sans-serif;
     }
-
+    .game{
+      max-width: 1140px;
+      width: 100%;
+      margin: 0 auto;
+      background: #f8efed;
+    }
     .game-field{
       display: flex;
       flex-wrap: wrap;
@@ -191,24 +197,25 @@
     .cell{
       width: 100px;
       height: 100px;
-      background: #ffffff;
+      background: #d7dded;
       transition: background-color .3s;
       cursor: pointer;
+      border: 2px solid #4c0946;
     }
     .cell:hover{
       background: #ecd6ee;
     }
     .cell--winner{
-      background: #ecd6ee;
+      background: #ee7c7c;
     }
     .symbol{
       font-size: 70px;
     }
     .symbol--x{
-      color: #FF0000;
+      color: #a60c5c;
     }
     .symbol--0{
-      color: #00FF00;
+      color: #208ed8;
     }
   </style>
 </body>
