@@ -8,19 +8,27 @@
 </head>
 <body>
   <div class="container">
-    <p>
-    <strong>slice(ломтик)</strong><br>
-    arr.slice([start], [end]);<br>
-    Возвращает новый массив, в который копирует все элементы с индекса start до end (не включая end). 
-    start и end могут быть отрицательными, в этом случае отсчет позиции будет вестись с конца массива.
-    <br>
-    <br>
-    <strong><a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Array/includes">includes()</a></strong>
-  </p>
-  <br>
-  <br>
-  <strong>Синтаксис array?.method</strong> использует необязательный оператор цепочки в JavaScript. Этот оператор позволяет вам получать доступ к свойствам или вызывать методы объекта, который может быть нулевым или неопределенным, не вызывая ошибки.
-  При использовании с массивом array?.method пытается вызвать указанный метод для массива. Если массив не равен null или undefined, метод вызывается нормально. Однако, если массив равен null или undefined, выражение оценивается как undefined без выдачи ошибки.
+    <ul class="list">
+      <li class="list-item">
+        <a href="#slice" class="link">slice()</a>
+      </li>
+      <li class="list-item"><a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Array/includes" class="link" target="_blank">includes()</a></li>
+      <li class="list-item"><a href="#optional-chaining" class="link" target="_blank">Optional Chaining</a></li>
+      <li class="list-item"><a href="https://doka.guide/js/array-from/" class="link" target="_blank">Array.from()</a></li>
+      <li class="list-item"><a href="" class="link" target="_blank">filter()</a></li>
+    </ul>
+    <div class="item" id="slice">
+      <p>
+        <strong>slice(ломтик)</strong><br>
+        arr.slice([start], [end]);<br>
+        Возвращает новый массив, в который копирует все элементы с индекса start до end (не включая end). 
+        start и end могут быть отрицательными, в этом случае отсчет позиции будет вестись с конца массива.
+      </p>
+    </div>
+    <div class="item">
+      <strong>Синтаксис array?.method</strong> использует необязательный оператор цепочки в JavaScript. Этот оператор позволяет вам получать доступ к свойствам или вызывать методы объекта, который может быть нулевым или неопределенным, не вызывая ошибки.
+      При использовании с массивом array?.method пытается вызвать указанный метод для массива. Если массив не равен null или undefined, метод вызывается нормально. Однако, если массив равен null или undefined, выражение оценивается как undefined без выдачи ошибки.
+    </div>
   </div>
   <script>
     let arr = [8,2,3];
@@ -32,7 +40,37 @@
 
     console.log(arrayOpOp(arr?.[0] ?? 'нету массива'));
     console.log(arrayOpOp(arr ?? 'нету массива'));
+
+    console.log(Array.from({ length: 9 }, () => null));
+    console.log(Array.from(new Array(9), () => null));
+
+    //filter()
+    let arrFilter = arr.map(value => value);
+    console.log(arrFilter);
+    
+    
+    
+    
+    
+    
     
   </script>
+  <style>
+    .list{
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: 10px 10px;
+    }
+    .list-item{
+      padding: 5px;
+      background: #6e0a69;
+    }
+    .link{
+      text-decoration: none;
+      color: #ffffff;
+    }
+  </style>
 </body>
 </html>

@@ -51,7 +51,7 @@
       const [currentStep, setCurrentStep] = React.useState(SYMBOL_X);//текущий ход
       const [winnerSequence, setWinnerSequence] = React.useState();//определяем состояние для хранения победившей последовательности
       
-      console.log(cells);
+      // console.log(cells);
       
 
       const getSymbolClassName = (symbol) => {//функция добавления буквы хода и придания этой букве класса, в зависимости, какое значение у переменной currentStep
@@ -65,6 +65,8 @@
       }
 
       const renderSymbol = (symbol) => <span className={ `symbol ${getSymbolClassName(symbol)}` }>{ symbol }</span>;//функция, с помощью которой можно вставлять в разные места span, просто меняя в нем данные с помощью аргумента
+      
+      const isDraw = !winnerSequence && cells.filter(value => value).length === 9;
 
       const handleCellClick = (id) => {//функция управления содержимым клеток, срабатывает по нажатию на кнопку
         if (cells[id] || winnerSequence) {//проверяем, существует ли элемент массива, если существует, или есть массив с победившей комбинацией, то return, то есть игра останавливается
@@ -74,30 +76,39 @@
         let cellsCopy = cells.slice();//делаем копию изначального массива для иммутабельности
         cellsCopy[id] = currentStep;//помещаем в выбранную ячейку переменную currentStep из хука
         const winner = computeWinner(cellsCopy);//переменная winner, если с помощью функции computeWinner(cellsCopy) в скопированном и измененном массиве нашелся победитель, содержится массив с числами - индексами клеток победившей комбинации
-        console.log();
+        // console.log(!isDraw);
         
 
         setCells(cellsCopy);//меняем старый массив в хуке на новый, и этим перерисовываем все данные из массива
         setCurrentStep(currentStep === SYMBOL_0 ? SYMBOL_X : SYMBOL_0);//проверяем, какой символ лежит в currentStep и если надо меняем его
         setWinnerSequence(winner);//передаем массив индексов победившей последовательности клеток в хук winnerSequence
 
-        const drawResult = cellsCopy.includes(null);//проверка, остались ли в массиве cellsCopy элементы null
+        // const drawResult = cellsCopy.includes(null);//проверка, остались ли в массиве cellsCopy элементы null
         
-        if (!drawResult && !winner) {//если остались, и при этом не появился массив с выигрышной комбинацией, то выводим сообщение, что ничья
-          setTimeout(() => alert('Ничья'), 100);
-        }
+        // if (!drawResult && !winner) {//если остались, и при этом не появился массив с выигрышной комбинацией, то выводим сообщение, что ничья
+        //   // setTimeout(() => alert('Ничья'), 100);
+        // }
       }
 
       let winnerSymbol = winnerSequence ? cells[winnerSequence[0]] : undefined;//проверяем, есть ли у нас массив с индексами победителя, и если есть, передаем в переменную winnerSymbol симол из массива cells, чей индекс соответствует первому элементу из массива победившей комбинации, зачем это надо смотри в строке, показывающей ход или победителя
 
-      const removeCells = () => {//функция удаления всех элементов из клеток
+      const removeCells = () => {//функция удаления всех элементов из клеток. Вариант, который сам сделал
         let cellsCopy = cells.slice();
         for (let i = 0; i < cellsCopy.length; i++) {
           cellsCopy[i] = null;
         }
-        setWinnerSequence();//очищаем цвет у победивших клеток, передавая пустое значение в массив winnerSequence
-        setCells(cellsCopy);
+        setWinnerSequence(undefined);//очищаем цвет у победивших клеток, передавая пустое значение в массив winnerSequence
+        setCells(cellsCopy);//передаем копию массива в хук
+        setCurrentStep(SYMBOL_X)//передаем в currentStep значение хода, с которого будет начинаться новая игра
       }
+
+      const handleRecetClik = () => {//функция удаления всех элементов из клеток. Вариант из видео
+        setCells(Array.from({ length: 9 }, () => null));
+        setWinnerSequence(undefined);
+        setCurrentStep(SYMBOL_0);
+      }
+
+      return <GameInfo/>
 
       return (
         <div>
@@ -105,7 +116,9 @@
           
           <div className="game">
             <div className="game-info">
-              {winnerSequence ? `Победитель: ` : 'Ход:'} {renderSymbol(winnerSymbol ?? currentStep)}
+              
+              {isDraw ? 'Ничья' : winnerSequence ? `Победитель: ` : 'Ход:'}
+              {!isDraw && renderSymbol(winnerSymbol ?? currentStep)}
             </div>
             <div className="game-field">
               {cells.map((symbol, id) => {
@@ -119,10 +132,15 @@
                        </button>
               })}
             </div>
-            <button onClick={() => removeCells()}>Очистить</button>
+            <button className="remove-btn" onClick={removeCells}>Очистить Свой Вариант</button>
+            <button className="remove-btn" onClick={handleRecetClik}>Очистить Вариант Из Видео</button>
           </div>
         </div>
       )
+    }
+
+    function GameInfo() {
+      return <div>GameInfo</div>
     }
 
     const root = ReactDOM.createRoot(document.getElementById('root'));//root - это тот объект, в котором будет отрисовываться приложение
@@ -183,16 +201,19 @@
       font-family: sans-serif;
     }
     .game{
-      max-width: 1140px;
-      width: 100%;
       margin: 0 auto;
+      max-width: 500px;
+      width: 100%;
       background: #f8efed;
+      padding: 30px;
+      text-align: center;
     }
     .game-field{
       display: flex;
       flex-wrap: wrap;
       width: 300px;
       height: 300px;
+      margin: 0 auto;
     }
     .cell{
       width: 100px;
@@ -216,6 +237,15 @@
     }
     .symbol--0{
       color: #208ed8;
+    }
+    .remove-btn{
+      background: #d85151;
+      border: none;
+      padding: 5px 15px;
+      border-radius: 3px;
+      margin: 5px;
+      color: #ffffff;
+      cursor: pointer;
     }
   </style>
 </body>
