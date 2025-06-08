@@ -20,8 +20,6 @@
 
   </div>
   <script type="text/babel" data-type="module">
-    // import { BrowserRouter, Routes, Route, Link } from "https://esm.sh/react-router-dom@7?dev";//подключает к проекту react-router-dom
-
     const SYMBOL_X = 'X';
     const SYMBOL_0 = '0';
 
@@ -52,19 +50,6 @@
       const [winnerSequence, setWinnerSequence] = React.useState();//определяем состояние для хранения победившей последовательности
       
       // console.log(cells);
-      
-
-      const getSymbolClassName = (symbol) => {//функция добавления буквы хода и придания этой букве класса, в зависимости, какое значение у переменной currentStep
-        if (symbol === SYMBOL_X) {
-          return 'symbol--x';
-        }
-        if (symbol === SYMBOL_0) {
-          return 'symbol--0';
-        }
-        return '';
-      }
-
-      const renderSymbol = (symbol) => <span className={ `symbol ${getSymbolClassName(symbol)}` }>{ symbol }</span>;//функция, с помощью которой можно вставлять в разные места span, просто меняя в нем данные с помощью аргумента
       
       const isDraw = !winnerSequence && cells.filter(value => value).length === 9;
 
@@ -108,18 +93,16 @@
         setCurrentStep(SYMBOL_0);
       }
 
-      return <GameInfo/>
-
       return (
         <div>
           <div className="privet">Привет</div>
           
           <div className="game">
-            <div className="game-info">
-              
-              {isDraw ? 'Ничья' : winnerSequence ? `Победитель: ` : 'Ход:'}
-              {!isDraw && renderSymbol(winnerSymbol ?? currentStep)}
-            </div>
+            <GameInfo 
+              isDraw={isDraw} 
+              winnerSequence={winnerSequence} 
+              currentStep={currentStep}
+            />
             <div className="game-field">
               {cells.map((symbol, id) => {
                 const isWinner = winnerSequence?.includes(id);//проверяем, включает ли массив с индексами победившей комбинации индекс нажатой кнопки, и есть ли вообще победившая комбинация
@@ -139,8 +122,37 @@
       )
     }
 
-    function GameInfo() {
-      return <div>GameInfo</div>
+    function GameInfo({isDraw, winnerSequence, currentStep}) {//пропсы можно сразу деструктурировать
+      return (
+        <div className="game-info">
+          {isDraw ? 'Ничья' : winnerSequence ? `Победитель: ` : 'Ход:'}
+          {!isDraw && <gameSymbol symbol={winnerSymbol ?? currentStep}/>}
+        </div>
+      )
+    }
+
+    function GameCell({isWinner, onClick, symbol}) {
+      return <button 
+                key={id} 
+                className={`cell ${isWinner ? 'cell--winner' : ''}`}//и если isWinner true, добавляем класс cell--winner. Класс cell-winner добавляется всем трем кнопкам, потому что каждый раз при нажатии на кнопку перерисовываются все кнопки, и если пришел массив с выигрышной комбинацией, то окрасятся при перерисовке те кнопки, чей индекс совпадает с одним из элементов выигрышного массива
+                onClick={ () => onClick}
+              >
+                { symbol ? <GameSymbol symbol={symbol}/> : null }
+              </button>
+    }
+
+    function GameSymbol({ symbol }) {
+      const getSymbolClassName = (symbol) => {
+        if (symbol === SYMBOL_X) {
+          return 'symbol--x';
+        }
+        if (symbol === SYMBOL_0) {
+          return 'symbol--0';
+        }
+        return '';
+      }
+
+      return <span className={ `symbol ${getSymbolClassName(symbol)}` }>{ symbol }</span>;//функция, с помощью которой можно вставлять в разные места span, просто меняя в нем данные с помощью аргумента
     }
 
     const root = ReactDOM.createRoot(document.getElementById('root'));//root - это тот объект, в котором будет отрисовываться приложение
